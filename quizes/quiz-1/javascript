@@ -1,0 +1,154 @@
+// 1. Sum of two numbers
+let a = 10, b = 20;
+console.log("1) Sum =", a + b);
+
+// 2. Area & Perimeter of rectangle
+let length = 10, width = 5;
+console.log("2) Area =", length * width);
+console.log("   Perimeter =", 2 * (length + width));
+
+// 3. Even or Odd
+let num = 7;
+console.log("3) Number is", num % 2 === 0 ? "Even" : "Odd");
+
+// 4. Positive, Negative, Zero
+let n = -3;
+if (n > 0) console.log("4) Positive");
+else if (n < 0) console.log("4) Negative");
+else console.log("4) Zero");
+
+// 5. Switch day
+let day = 3;
+switch(day) {
+    case 0: console.log("5) Sunday"); break;
+    case 1: console.log("5) Monday"); break;
+    case 2: console.log("5) Tuesday"); break;
+    case 3: console.log("5) Wednesday"); break;
+    case 4: console.log("5) Thursday"); break;
+    case 5: console.log("5) Friday"); break;
+    case 6: console.log("5) Saturday"); break;
+}
+
+// 6. Print 1 to 50
+console.log("6) Numbers 1 to 50:");
+for (let i = 1; i <= 50; i++) console.log(i);
+
+// 7. Sum 1 to 100 (while)
+let i = 1, sum = 0;
+while (i <= 100) { sum += i; i++; }
+console.log("7) Sum 1 to 100 =", sum);
+
+// 8. Pattern
+console.log("8) Pattern:");
+for (let i = 1; i <= 5; i++) console.log("*".repeat(i));
+
+// 9. greet(name)
+function greet(name) { return "Hello, " + name + "!"; }
+console.log("9)", greet("Sahil"));
+
+// 10. Max of 3 numbers
+function maxOfThree(a, b, c) { return Math.max(a, b, c); }
+console.log("10) Max =", maxOfThree(10, 20, 5));
+
+// 11. String functions
+let str = "javascript";
+console.log("11) Uppercase:", str.toUpperCase());
+console.log("    Length:", str.length);
+console.log("    Substring (2–6):", str.substring(2, 6));
+
+// 12. Student object
+let student = {
+    name: "Sahil",
+    age: 20,
+    course: "JavaScript"
+};
+console.log("12) Student:", student);
+
+// 13. Add method display()
+student.display = function() {
+    console.log("13) Student Details:", this.name, this.age, this.course);
+};
+student.display();
+
+// 14. Math object
+console.log("14) Random (1–100):", Math.floor(Math.random() * 100) + 1);
+console.log("    √144 =", Math.sqrt(144));
+console.log("    Round 4.78 =", Math.round(4.78));
+
+// 15. Date object
+let d = new Date();
+console.log("15) Date:", d.toDateString());
+console.log("    Month:", d.toLocaleString('default', { month: 'long' }));
+console.log("    Time:", d.toLocaleTimeString());
+
+// 16. Fruits array
+let fruits = ["Apple", "Mango", "Banana", "Orange", "Grapes"];
+fruits.push("Pineapple");
+fruits.shift();
+fruits.sort();
+console.log("16) Sorted fruits:", fruits);
+
+// 17. Largest number in array
+let arr = [20,45,10,67,89];
+let largest = arr[0];
+for (let n of arr) if (n > largest) largest = n;
+console.log("17) Largest =", largest);
+
+// 18. Count even numbers in array
+function countEven(numbers) {
+    let count = 0;
+    for (let n of numbers) if (n % 2 === 0) count++;
+    return count;
+}
+console.log("18) Even count =", countEven([2,5,6,8,9,10]));
+
+// 19. Button change background (DOM)
+document.write('<button onclick="document.body.style.background = lightblue">19) Change Background</button><br><br>');
+
+// 20. Form Submitted alert
+document.write(`
+<form onsubmit="alert('Form Submitted!')">
+    <button type="submit">20) Submit Form</button>
+</form><br>
+`);
+
+// 21. CSS paragraph style
+document.write(`
+<style>
+p { color: blue; text-align: center; }
+</style>
+<p>21) This paragraph is styled using CSS</p>
+`);
+
+// 22. Multiplication table
+console.log("22) Multiplication Table of 5:");
+for (let i = 1; i <= 10; i++) {
+    console.log(5 x ${i} = ${5 * i});
+}
+
+// 23. for...of characters
+console.log("23) Characters of string:");
+for (let ch of "HELLO") console.log(ch);
+
+// 24. Student marks: total, avg, highest
+let marks = [78, 90, 67, 88, 92];
+let total = 0, highestMark = marks[0];
+for (let m of marks) {
+    total += m;
+    if (m > highestMark) highestMark = m;
+}
+console.log("24) Total =", total);
+console.log("    Average =", total / marks.length);
+console.log("    Highest =", highestMark);
+
+// 25. Add <li> items dynamically
+document.write(`
+<button onclick="addItem()">25) Add Item</button>
+<ul id="list"></ul>
+`);
+
+function addItem() {
+    let li = document.createElement("li");
+    li.textContent = "New Item Added";
+    document.getElementById("list").appendChild(li);
+}
