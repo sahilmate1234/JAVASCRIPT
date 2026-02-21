@@ -1,1 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Railway Ticket Booking Portal</title>
 
+<!-- Bootstrap 5 -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #002147, #8B0000);
+}
+
+/* Header */
+.header {
+    background: #8B0000;
+    color: white;
+    padding: 15px;
+}
+
+/* HD Indian Train Banner */
+.banner {
+    position: relative;
+    background: url('https://images.unsplash.com/photo-1589190053144-7f0f4b2f7c15?auto=format&fit=crop&w=1600&q=80') no-repeat center center;
+    background-size: cover;
+    width: 100%;
+    height: 320px;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.banner::after {
+    content: "Book Fast • Travel Safe • Indian Railways";
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+    background: rgba(0,0,0,0.6);
+    padding: 10px 15px;
+    border-radius: 10px;
+}
+
+@media (max-width: 768px) {
+    .banner { height: 180px; }
+}
+
+.card {
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+}
+
+.required {
+    border-left: 4px solid #8B0000;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #8B0000;
+    box-shadow: 0 0 6px #8B0000;
+}
+
+.btn-primary {
+    background-color: #8B0000;
+    border: none;
+    transition: 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #002147;
+}
+
+.error {
+    color: yellow;
+    font-size: 14px;
+    display: none;
+}
+
+.selected-row {
+    background-color: #ffc107 !important;
+}
+
+footer {
+    background: #002147;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    margin-top: 30px;
+}
+</style>
+</head>
+
+<body>
+
+<header class="header text-center">
+<h2><i class="bi bi-train-front-fill"></i> Indian Railway Booking Portal</h2>
+</header>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<div class="container">
+<a class="navbar-brand" href="#">Railway</a>
+<button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navMenu">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="navMenu">
+<ul class="navbar-nav ms-auto">
+<li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
+<li class="nav-item"><a class="nav-link" href="#">Book Ticket</a></li>
+<li class="nav-item"><a class="nav-link" href="#">PNR Status</a></li>
+<li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+</ul>
+</div>
+</div>
+</nav>
+
+<div class="container mt-4">
+
+<div class="banner mb-4"></div>
+
+<div class="card p-4 booking-card">
+<h4 class="text-center mb-3">Book Your Journey</h4>
+
+<form id="bookingForm">
+
+<div class="row mb-3">
+<div class="col-md-6">
+<label>Source Station *</label>
+<input type="text" id="source" class="form-control required">
+<div class="error" id="sourceError">Source Required</div>
+</div>
+
+<div class="col-md-6">
+<label>Destination Station *</label>
+<input type="text" id="destination" class="form-control required">
+<div class="error" id="destinationError">Destination Required</div>
+</div>
+</div>
+
+<div class="row mb-3">
+<div class="col-md-4">
+<label>Journey Date *</label>
+<input type="date" id="journeyDate" class="form-control required">
+<div class="error" id="dateError">Invalid Date</div>
+</div>
+
+<div class="col-md-4">
+<label>Class</label>
+<select id="travelClass" class="form-select" data-bs-toggle="tooltip" title="Higher class = Higher Fare">
+<option value="Sleeper">Sleeper</option>
+<option value="3A">3A</option>
+<option value="2A">2A</option>
+<option value="1A">1A</option>
+</select>
+</div>
+
+<div class="col-md-4">
+<label>Quota</label>
+<select id="quota" class="form-select">
+<option value="General">General</option>
+<option value="Tatkal">Tatkal</option>
+<option value="Ladies">Ladies</option>
+</select>
+</div>
+</div>
+
+<div class="mb-3">
+<label>Passengers (1-6)</label>
+<input type="number" id="passengers" min="1" max="6" value="1" class="form-control">
+<div class="error" id="passengerError">1-6 Allowed</div>
+</div>
+
+<button type="submit" class="btn btn-primary w-100" id="searchBtn">Search Trains</button>
+<button type="button" class="btn btn-secondary w-100 mt-2" id="resetBtn">Reset</button>
+
+</form>
+</div>
+
+<div id="trainSection" class="mt-4" style="display:none;">
+<h5>Available Trains</h5>
+<table class="table table-striped">
+<thead class="table-dark">
+<tr>
+<th>Select</th>
+<th>No</th>
+<th>Name</th>
+<th>Seats</th>
+</tr>
+</thead>
+<tbody id="trainBody"></tbody>
+</table>
+</div>
+
+<div id="summarySection" class="card p-4 mt-3" style="display:none;">
+<h5>Booking Summary</h5>
+<div id="summaryContent"></div>
+<button class="btn btn-success mt-3" data-bs-toggle="modal" data-bs-target="#confirmModal">
+Confirm Booking
+</button>
+</div>
+
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="confirmModal">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+<h5>Confirm Booking</h5>
+</div>
+<div class="modal-body">
+Are you sure you want to confirm this booking?
+</div>
+<div class="modal-footer">
+<button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+<button class="btn btn-primary" id="confirmBookingBtn">Yes Confirm</button>
+</div>
+</div>
+</div>
+</div>
+
+<footer>
+© 2026 Indian Railways – Demo Portal
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+const trains = [
+{ no: 12345, name: "Rajdhani Express", seats: 20 },
+{ no: 54321, name: "Shatabdi Express", seats: 15 },
+{ no: 11111, name: "Duronto Express", seats: 10 }
+];
+
+let bookingData = {};
+
+$(".booking-card").hide().fadeIn(1000);
+
+// Tooltip
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+tooltipTriggerList.map(el => new bootstrap.Tooltip(el));
+
+// Form Submit
+$("#bookingForm").submit(function(e){
+e.preventDefault();
+$(".error").hide();
+
+let source=$("#source").val().trim();
+let dest=$("#destination").val().trim();
+let date=$("#journeyDate").val();
+let passengers=parseInt($("#passengers").val());
+let travelClass=$("#travelClass").val();
+let quota=$("#quota").val();
+let today=new Date().toISOString().split("T")[0];
+
+if(!source){ $("#sourceError").fadeIn(); return; }
+if(!dest){ $("#destinationError").fadeIn(); return; }
+if(source===dest){ alert("Source & Destination cannot be same"); return; }
+if(!date || date<today){ $("#dateError").fadeIn(); return; }
+if(passengers<1 || passengers>6){ $("#passengerError").fadeIn(); return; }
+
+bookingData={source,dest,date,passengers,travelClass,quota};
+
+$("#searchBtn").text("Searching...").prop("disabled", true);
+setTimeout(()=>{
+$("#searchBtn").text("Search Trains").prop("disabled", false);
+showTrains();
+alert("Trains Found Successfully!");
+},1000);
+});
+
+// Show trains
+function showTrains(){
+$("#trainBody").empty();
+trains.forEach((train,index)=>{
+$("#trainBody").append(`
+<tr>
+<td><input type="radio" name="trainSelect" value="${index}"></td>
+<td>${train.no}</td>
+<td>${train.name}</td>
+<td>${train.seats}</td>
+</tr>
+`);
+});
+$("#trainSection").slideDown();
+}
+
+// Train selection
+$(document).on("change","input[name='trainSelect']",function(){
+$("#trainBody tr").removeClass("selected-row");
+$(this).closest("tr").addClass("selected-row");
+
+let index=$(this).val();
+let train=trains[index];
+
+let baseFare=calculateFare(bookingData.travelClass);
+let surcharge=bookingData.quota==="Tatkal"?200:0;
+let gst=baseFare*0.05;
+
+let totalPerPassenger=baseFare+gst+surcharge;
+let total=totalPerPassenger*bookingData.passengers;
+
+bookingData.train=train.name;
+bookingData.total=total;
+bookingData.pnr=Math.floor(1000000000+Math.random()*9000000000);
+
+$("#summaryContent").html(`
+<p><strong>Train:</strong> ${train.name}</p>
+<p><strong>Route:</strong> ${bookingData.source} → ${bookingData.dest}</p>
+<p><strong>Date:</strong> ${bookingData.date}</p>
+<p><strong>Passengers:</strong> ${bookingData.passengers}</p>
+<hr>
+<p><strong>Fare Breakup (Per Passenger):</strong></p>
+<p>Base: ₹${baseFare}</p>
+<p>GST (5%): ₹${gst.toFixed(2)}</p>
+<p>Quota Charges: ₹${surcharge}</p>
+<h5>Total Fare: ₹${total.toFixed(2)}</h5>
+`);
+
+$("#summarySection").fadeIn();
+});
+
+// Fare calculation
+function calculateFare(travelClass){
+switch(travelClass){
+case "Sleeper": return 500;
+case "3A": return 1000;
+case "2A": return 1500;
+case "1A": return 2000;
+}
+}
+
+// Confirm booking
+$("#confirmBookingBtn").click(function(){
+alert("Booking Successful! PNR: "+bookingData.pnr);
+localStorage.setItem("lastBooking",JSON.stringify(bookingData));
+$("#summaryContent").append(`<p class="text-success mt-2">Thank You for Booking!</p>`);
+});
+
+// Reset
+$("#resetBtn").click(function(){
+$("#bookingForm")[0].reset();
+$("#trainSection").hide();
+$("#summarySection").hide();
+});
+</script>
+
+</body>
+</html>
